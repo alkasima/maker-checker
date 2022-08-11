@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Models\Usermod;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use App\Http\Resources\UserResource;
 use App\Http\Resources\UsersmodResource;
 use App\Http\Requests\StoreUsermodRequest;
@@ -30,11 +31,11 @@ class UsersmodController extends Controller
         $status = $request->status;
 
         //Get request detail from Usermod table
-        $finduser = Usermod::where('id',$request_id)->first();;
+        $finduser = Usermod::find($request_id);
 
         $check_status = $finduser->request_status;
 
-        if($check_status == "Pending") {
+        if($check_status == "accept" && "decline") {
             
             return "The request is already confirmed";
 
@@ -67,6 +68,7 @@ class UsersmodController extends Controller
                                         $email = $finduser->email;
                                         $request_type = $finduser->request_type;
                                         $requst_status = $finduser->request_status;
+                                        $user_id = $finduser->user_id;
 
                                         //Check the request type and initiate the changes made by the fellow administrator
                                         if($request_type == "create")
@@ -76,10 +78,10 @@ class UsersmodController extends Controller
 
                                         }else if($request_type == "delete")
                                         {
-                                            return 'Delete user data';
+                                            return $this->delete($user_id);
                                         }else if($request_type == "update")
                                         {
-                                            return 'Update user data';
+                                            return $this->update($user_id);
                                         }else {
                                             return 'Invalid request type';
                                     }
@@ -120,4 +122,29 @@ class UsersmodController extends Controller
 
             //return new UserResource($users);
         }
+
+
+        //Delete a user from the database
+        public function delete($user_id)
+        {
+            $id = $user_id;
+
+            $user = User::find($id);    
+            $user->delete();
+
+            $data = [
+                'message' => 'User deleted successfully'
+            ];
+
+            return response()->json($data, 200);
+
+        }
+
+
+        //Update user 
+        public function update($user_id)
+        {
+            
+        }
+
 }
