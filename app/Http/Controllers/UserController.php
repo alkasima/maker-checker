@@ -3,11 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Mail\SendMail;
 use App\Models\Usermod;
 use Illuminate\Http\Request;
 use App\Http\Requests\UsersRequest;
 use App\Http\Resources\UserResource;
+use Illuminate\Support\Facades\Mail;
+use App\Notifications\SendNotification;
 use App\Http\Requests\UsersRequestUpdate;
+use Illuminate\Support\Facades\DB;
 
 class UserController extends Controller
 {
@@ -18,6 +22,8 @@ class UserController extends Controller
      */
     public function index()
     {
+         
+
         return UserResource::collection(User::all());
     }
 
@@ -48,6 +54,22 @@ class UserController extends Controller
             'request_type' => "create",
             'request_status' => "Pending"
         ]);
+
+        //Send email notification to the administrators with role 1 in users table
+         $details = [
+            'request_type' => "Create",
+            'request_status' => "Pending",
+            'first_name' => $request->input('first_name'),
+            'last_name' => $request->input('last_name'),
+            'email' => $request->input('email')
+        ];
+
+        //Get all administrators email
+        $emails = DB::table('users')->where('role', "1")->pluck('email');
+ 
+        foreach ($emails as $email) {
+            Mail::to($email)->send(new SendMail($details));
+        }
 
         return new UserResource($users);
     }
@@ -132,6 +154,22 @@ class UserController extends Controller
                 'request_status' => "Pending"
             ]);
 
+            //Send email notification to the administrators with role 1 in users table
+         $details = [
+            'request_type' => "Update",
+            'request_status' => "Pending",
+            'first_name' => $first_name,
+            'last_name' => $last_name,
+            'email' => $email
+        ];
+
+        //Get all administrators email
+        $emails = DB::table('users')->where('role', "1")->pluck('email');
+ 
+        foreach ($emails as $email) {
+            Mail::to($email)->send(new SendMail($details));
+        }
+
             return new UserResource($users);
         }
     }
@@ -175,6 +213,22 @@ class UserController extends Controller
                 'request_type' => "delete",
                 'request_status' => "Pending"
             ]);
+
+            //Send email notification to the administrators with role 1 in users table
+         $details = [
+            'request_type' => "Delete",
+            'request_status' => "Pending",
+            'first_name' => $first_name,
+            'last_name' => $last_name,
+            'email' => $email
+        ];
+
+        //Get all administrators email
+        $emails = DB::table('users')->where('role', "1")->pluck('email');
+ 
+        foreach ($emails as $email) {
+            Mail::to($email)->send(new SendMail($details));
+        }
 
             return new UserResource($users);
         }
