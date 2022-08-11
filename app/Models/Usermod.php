@@ -13,6 +13,7 @@ class Usermod extends Model
         'first_name',
         'last_name',
         'email',
+        'user_id',
         'request_type',
         'request_status'
     ];
