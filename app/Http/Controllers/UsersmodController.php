@@ -81,7 +81,7 @@ class UsersmodController extends Controller
                                             return $this->delete($user_id);
                                         }else if($request_type == "update")
                                         {
-                                            return $this->update($user_id);
+                                            return $this->update($user_id, $first_name, $last_name, $email);
                                         }else {
                                             return 'Invalid request type';
                                     }
@@ -142,9 +142,16 @@ class UsersmodController extends Controller
 
 
         //Update user 
-        public function update($user_id)
+        public function update($user_id, $first_name, $last_name, $email)
         {
-            
+            //Udate the request details in Usermod table
+            User::where('id', $user_id)->update(['first_name' => $first_name]);
+            $data = [
+                'message' => 'User updated successfully'
+            ];
+
+            return response()->json($data, 200);
+                            
         }
 
 }
