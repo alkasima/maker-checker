@@ -4,6 +4,13 @@ Maker Checker is a laravel 8 api the system resolves around the idea that for an
 
 The system is using laravel passport authentication.
 
+Make sure you send the request in the header with the following
+<br>
+<strong>Headers</strong>
+<p>Accept: application/json</p>
+<p>Authorization: Bearer generated access token</p>
+<br>
+
 <H1>API Endpoint Documentation</H1>
 <table>
 <tr>
@@ -71,6 +78,12 @@ The system is using laravel passport authentication.
 <td>Accept or decline request by sending status parameter with accept or decline</td>
 </tr> 
 
+<tr>
+<td>9<td>
+<td>Logout</td>
+<td>/api/v1/logout</td>
+<td>Logout from the system and revoke the pasport access token</td>
+</tr> 
 
 
 </table>
