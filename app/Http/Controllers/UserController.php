@@ -6,12 +6,13 @@ use App\Models\User;
 use App\Mail\SendMail;
 use App\Models\Usermod;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use App\Http\Requests\UsersRequest;
 use App\Http\Resources\UserResource;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use App\Notifications\SendNotification;
 use App\Http\Requests\UsersRequestUpdate;
-use Illuminate\Support\Facades\DB;
 
 class UserController extends Controller
 {
@@ -232,5 +233,17 @@ class UserController extends Controller
 
             return new UserResource($users);
         }
+    }
+
+    //Logout admin from the system
+    public function logout(Request $request) {
+        
+        $token = $request->user()->token();
+        $token->revoke();
+           
+        $data = [
+            'message' => 'Logged out',
+        ];
+        return response()->json($data, 401);
     }
 }

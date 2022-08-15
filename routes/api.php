@@ -25,7 +25,6 @@ use App\Http\Controllers\RequestpermitController;
 Route::post('v1/login', [LoginController::class, 'login']);
 Route::post('v1/register', [RegisterController::class, 'register']);
 
-
 //Protected routes
 Route::middleware('auth:api')->prefix('v1')->group(function() {
     Route::get('/request', function(Request $request){
@@ -51,5 +50,8 @@ Route::middleware('auth:api')->prefix('v1')->group(function() {
     //Route to accept or decline request 
     Route::post('/users/confirm/{id}', [UsersmodController::class, 'check']);
 
+    //Logout user
+    Route::post('logout', [UserController::class, 'logout']);
 
 });
+
